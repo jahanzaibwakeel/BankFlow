@@ -1,19 +1,25 @@
 package com.bankflow.api.controller;
 
 import com.bankflow.api.domain.AccountStatus;
+import com.bankflow.api.domain.TransferStatus;
 import com.bankflow.api.dto.ApiResponse;
 import com.bankflow.api.dto.AuditDtos.AuditLogResponse;
 import com.bankflow.api.dto.PageResponse;
 import com.bankflow.api.dto.ReconciliationDtos.ReconciliationReport;
+import com.bankflow.api.dto.TransferDtos.AdminTransferResponse;
 import com.bankflow.api.dto.TransferDtos.ReviewRequest;
+import com.bankflow.api.dto.TransferDtos.ReviewQueueSummary;
 import com.bankflow.api.dto.TransferDtos.TransferResponse;
 import com.bankflow.api.service.AccountService;
 import com.bankflow.api.service.AuditService;
 import com.bankflow.api.service.ReconciliationService;
 import com.bankflow.api.service.TransferService;
 import jakarta.validation.Valid;
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,6 +50,29 @@ public class AdminController extends BaseController {
         return page(auditService.all(pageable).map(log -> new AuditLogResponse(
             log.getId(), log.getActorUserId(), log.getAction(), log.getResourceType(), log.getResourceId(), log.getDetails(), log.getCreatedAt()
         )));
+    }
+
+    @GetMapping("/transfers")
+    public ResponseEntity<ApiResponse<PageResponse<AdminTransferResponse>>> transfers(
+        @RequestParam(required = false) TransferStatus status,
+        @RequestParam(required = false) UUID accountId,
+        @RequestParam(required = false) BigDecimal minAmount,
+        @RequestParam(required = false) BigDecimal maxAmount,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant createdFrom,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant createdTo,
+        Pageable pageable
+    ) {
+        return page(transferService.searchForAdmin(status, accountId, minAmount, maxAmount, createdFrom, createdTo, pageable));
+    }
+
+    @GetMapping("/transfers/pending-review")
+    public ResponseEntity<ApiResponse<PageResponse<AdminTransferResponse>>> pendingTransfers(Pageable pageable) {
+        return page(transferService.searchForAdmin(TransferStatus.PENDING_REVIEW, null, null, null, null, null, pageable));
+    }
+
+    @GetMapping("/transfers/review-summary")
+    public ResponseEntity<ApiResponse<ReviewQueueSummary>> reviewSummary() {
+        return ok(new ReviewQueueSummary(transferService.pendingReviewCount()));
     }
 
     @PatchMapping("/transfers/{id}/review")

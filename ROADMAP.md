@@ -35,13 +35,19 @@ Left for next round:
 
 ## Phase 3: Distributed Production Hardening
 
-Status: later.
+Status: in progress.
 
-- Add Redis-backed distributed rate limiting.
+- Add Redis-backed distributed rate limiting. Done.
 - Optionally move idempotency fast-path/cache metadata to Redis while keeping PostgreSQL as the source of truth.
-- Expand admin review with status filters, amount thresholds, pending review queues, and approval/rejection reporting.
+- Expand admin review with status filters, amount thresholds, pending review queues, and approval/rejection reporting. Done.
 - Add reconciliation alerting or scheduled reconciliation reports.
 - Add operational dashboards/examples for metrics and health probes.
+
+Left for next round:
+
+- Add scheduled reconciliation reports or alerts.
+- Add Prometheus/Grafana dashboard examples for operational metrics.
+- Consider Redis-assisted idempotency lookup/cache while keeping PostgreSQL authoritative.
 
 ## What Is Already Complete
 

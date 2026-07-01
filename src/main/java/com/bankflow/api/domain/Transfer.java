@@ -47,6 +47,9 @@ public class Transfer {
     @Column(length = 500)
     private String reviewNote;
 
+    @Column
+    private Instant reviewedAt;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -66,6 +69,7 @@ public class Transfer {
         this.reviewedBy = reviewedBy;
         this.status = status;
         this.reviewNote = reviewNote;
+        this.reviewedAt = Instant.now();
     }
 
     public UUID getId() { return id; }
@@ -76,5 +80,6 @@ public class Transfer {
     public TransferStatus getStatus() { return status; }
     public String getReviewedBy() { return reviewedBy; }
     public String getReviewNote() { return reviewNote; }
+    public Instant getReviewedAt() { return reviewedAt; }
     public Instant getCreatedAt() { return createdAt; }
 }

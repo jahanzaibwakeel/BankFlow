@@ -54,13 +54,26 @@ curl -X POST http://localhost:8080/api/auth/refresh \
   -d "{\"refreshToken\":\"$REFRESH_TOKEN\"}"
 ```
 
+Transfers at or above `TRANSFER_REVIEW_THRESHOLD` return `PENDING_REVIEW` and do not move balances until an admin approves them.
+
 Swagger UI is available at `/swagger-ui.html`.
 
-## Admin Reconciliation
+## Admin Review And Reconciliation
 
 ```bash
+curl "http://localhost:8080/api/admin/transfers?status=PENDING_REVIEW" \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+curl http://localhost:8080/api/admin/transfers/review-summary \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+
+curl -X PATCH http://localhost:8080/api/admin/transfers/{transferId}/review \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"status":"COMPLETED","note":"Approved after manual review"}'
+
 curl http://localhost:8080/api/admin/reconciliation \
   -H "Authorization: Bearer $ADMIN_TOKEN"
 ```
 
-The reconciliation report verifies account balances against ledger-derived balances and checks internal transfers for equal debit/credit totals.
+Admin transfer search supports `status`, `accountId`, `minAmount`, `maxAmount`, `createdFrom`, `createdTo`, and pagination parameters. The reconciliation report verifies account balances against ledger-derived balances and checks internal transfers for equal debit/credit totals.

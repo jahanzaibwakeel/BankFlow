@@ -13,7 +13,8 @@
     { "key": "customerToken", "value": "" },
     { "key": "adminToken", "value": "" },
     { "key": "refreshToken", "value": "" },
-    { "key": "accountId", "value": "" }
+    { "key": "accountId", "value": "" },
+    { "key": "transferId", "value": "" }
   ],
   "item": [
     {
@@ -97,6 +98,18 @@
     },
     {
       "name": "Transfer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.collectionVariables.set('transferId', json.data.id);"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [
@@ -149,6 +162,45 @@
         "method": "GET",
         "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
         "url": "{{baseUrl}}/api/admin/audit-logs"
+      }
+    },
+    {
+      "name": "Admin Transfer Search",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+        "url": "{{baseUrl}}/api/admin/transfers?status=PENDING_REVIEW"
+      }
+    },
+    {
+      "name": "Admin Pending Review Queue",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+        "url": "{{baseUrl}}/api/admin/transfers/pending-review"
+      }
+    },
+    {
+      "name": "Admin Review Summary",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }],
+        "url": "{{baseUrl}}/api/admin/transfers/review-summary"
+      }
+    },
+    {
+      "name": "Admin Approve Transfer",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/api/admin/transfers/{{transferId}}/review",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"COMPLETED\",\n  \"note\": \"Approved after manual review\"\n}"
+        }
       }
     },
     {

@@ -1,10 +1,10 @@
 # BankFlow API
 
-Production-style Java 21/Spring Boot 3 banking backend with JWT auth, customer accounts, deposits, withdrawals, internal transfers, double-entry ledger entries, idempotency keys, audit logs, admin review workflows, PostgreSQL/Flyway, Docker, CI, and tests.
+Production-style Java 21/Spring Boot 3 banking backend with JWT auth, customer accounts, deposits, withdrawals, internal transfers, double-entry ledger entries, idempotency keys, Redis-backed rate limiting, audit logs, admin review workflows, PostgreSQL/Flyway, Docker, CI, and tests.
 
 ## GitHub Repository Description
 
-Secure Spring Boot 3 banking and double-entry ledger API with JWT auth, PostgreSQL/Flyway, idempotent transfers, row-level concurrency protection, audit logs, Testcontainers, Docker, and CI/CD.
+Secure Spring Boot 3 banking and double-entry ledger API with JWT auth, PostgreSQL/Flyway, idempotent transfers, row-level concurrency protection, Redis rate limiting, audit logs, Testcontainers, Docker, and CI/CD.
 
 ## Quick Start
 
@@ -47,6 +47,9 @@ docker compose up --build
 - `GET /api/transfers`
 - `GET /api/accounts/{id}/ledger`
 - `GET /api/admin/audit-logs`
+- `GET /api/admin/transfers`
+- `GET /api/admin/transfers/pending-review`
+- `GET /api/admin/transfers/review-summary`
 - `PATCH /api/admin/transfers/{id}/review`
 - `PATCH /api/admin/accounts/{id}/status?status=FROZEN`
 - `GET /api/admin/reconciliation`
@@ -62,4 +65,4 @@ See [JAVA_DEVELOPER_SETUP.md](docs/JAVA_DEVELOPER_SETUP.md) for Windows Java/Mav
 
 ## Known Limitations
 
-Redis is documented as an optional extension but not required for this project; idempotency and rate limiting are implemented locally/persistently with PostgreSQL plus an in-memory request limiter. External payment rails, KYC, statements, and real notification delivery are out of scope.
+Redis is optional for source builds and enabled in Docker Compose for distributed rate limiting. PostgreSQL remains the source of truth for idempotency and ledger data. External payment rails, KYC, statements, and real notification delivery are out of scope.

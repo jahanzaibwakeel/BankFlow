@@ -61,6 +61,28 @@ Authorization: Bearer {{customerToken}}
 GET {{baseUrl}}/api/admin/audit-logs
 Authorization: Bearer {{adminToken}}
 
+### Admin transfer search
+GET {{baseUrl}}/api/admin/transfers?status=PENDING_REVIEW
+Authorization: Bearer {{adminToken}}
+
+### Admin pending transfer queue
+GET {{baseUrl}}/api/admin/transfers/pending-review
+Authorization: Bearer {{adminToken}}
+
+### Admin review summary
+GET {{baseUrl}}/api/admin/transfers/review-summary
+Authorization: Bearer {{adminToken}}
+
+### Admin approve transfer
+PATCH {{baseUrl}}/api/admin/transfers/{{transferId}}/review
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "COMPLETED",
+  "note": "Approved after manual review"
+}
+
 ### Admin reconciliation
 GET {{baseUrl}}/api/admin/reconciliation
 Authorization: Bearer {{adminToken}}

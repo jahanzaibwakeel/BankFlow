@@ -14,13 +14,15 @@
 - Centralized validation and exception handling.
 - Consistent success, error, and pagination response formats.
 - Admin audit log listing, transfer review, and account status updates.
+- Threshold-based high-value transfer review with pending queue, searchable admin filters, approval, and rejection.
 - Admin ledger reconciliation for account/ledger drift and unbalanced internal transfers.
 - Flyway schema and demo seed migrations with constraints, foreign keys, and indexes.
+- Redis-backed distributed rate limiting with in-memory local fallback.
 - OpenAPI/Swagger UI.
 - Actuator health/readiness/liveness.
 - Request correlation IDs and structured log pattern.
-- CORS and simple rate limiting.
-- Dockerfile, Docker Compose, `.env.example`, and GitHub Actions CI.
+- CORS and rate limiting.
+- Dockerfile, Docker Compose with PostgreSQL and Redis, `.env.example`, and GitHub Actions CI.
 - CI uploads Surefire test reports and JaCoCo coverage reports as workflow artifacts.
 - REST Client and Postman API collections.
 - Unit tests, MockMvc integration tests, Testcontainers PostgreSQL tests, concurrency test, refresh-token tests, reconciliation tests.
@@ -35,13 +37,17 @@
 - `docker compose config` passed.
 - Postman collection added for manual endpoint verification once the app is running.
 - Maven Wrapper generated and pinned to Maven 3.9.9.
-- `mvnw.cmd test` passed: 12 tests discovered, 7 executed, 5 Testcontainers tests skipped because Docker is not reachable from the JVM in this environment.
+- `mvnw.cmd -version` passed after a Windows wrapper null-path fix.
+- `mvn test` passed: 14 tests discovered, 9 executed, 5 Testcontainers tests skipped because Docker is not reachable from the JVM in this environment.
 - `mvn -DskipTests package` passed and produced the Spring Boot jar.
 - `docker build --progress=plain -t bankflow-api:local .` passed.
-- `docker compose up -d --build` passed; PostgreSQL and app containers became healthy.
+- `docker compose up -d --build` passed; PostgreSQL, Redis, and app containers became healthy.
 - `GET /actuator/health/readiness` returned `{"status":"UP"}`.
 - `POST /api/auth/login` succeeded for the seeded customer.
 - `GET /api/accounts` succeeded with the customer JWT and returned the seeded accounts.
+- `POST /api/auth/login` succeeded for the seeded admin.
+- `GET /api/admin/transfers/review-summary` succeeded with the admin JWT.
+- Redis contained `bankflow:rate-limit:*` keys after authenticated smoke requests, confirming the Compose app used Redis rate limiting.
 
 ## Verification Blocked By Environment
 

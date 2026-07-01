@@ -25,4 +25,21 @@ public final class TransferDtos {
 
     public record TransferResponse(UUID id, UUID sourceAccountId, UUID destinationAccountId, BigDecimal amount, String description, TransferStatus status, Instant createdAt) {
     }
+
+    public record AdminTransferResponse(
+        UUID id,
+        UUID sourceAccountId,
+        UUID destinationAccountId,
+        BigDecimal amount,
+        String description,
+        TransferStatus status,
+        String reviewedBy,
+        String reviewNote,
+        Instant reviewedAt,
+        Instant createdAt
+    ) {
+    }
+
+    public record ReviewQueueSummary(long pendingReviewCount) {
+    }
 }

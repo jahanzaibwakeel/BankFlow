@@ -13,7 +13,8 @@ BankFlow API uses:
 - Protected admin routes under `/api/admin/**`.
 - Centralized error responses that avoid leaking internals.
 - Request correlation IDs via `X-Request-Id`.
-- Simple in-memory IP/path rate limiting.
+- IP/path rate limiting with local in-memory buckets by default and Redis-backed distributed buckets when `RATE_LIMIT_BACKEND=redis`.
+- High-value transfer review threshold through `TRANSFER_REVIEW_THRESHOLD`.
 
 Secrets must be provided through environment variables. Do not use the sample `.env.example` values in production.
 

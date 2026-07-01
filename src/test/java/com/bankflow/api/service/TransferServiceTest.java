@@ -3,6 +3,7 @@ package com.bankflow.api.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
@@ -50,7 +51,7 @@ class TransferServiceTest {
 
     @BeforeEach
     void setUp() {
-        transferService = new TransferService(accountRepository, transferRepository, ledgerEntryRepository, idempotencyKeyRepository, auditService);
+        transferService = new TransferService(accountRepository, transferRepository, ledgerEntryRepository, idempotencyKeyRepository, auditService, new BigDecimal("10000.00"));
         ownerId = UUID.randomUUID();
         User owner = user(ownerId, "owner@test.dev");
         source = account(UUID.randomUUID(), owner, "BF1", new BigDecimal("100.00"));
@@ -129,6 +130,45 @@ class TransferServiceTest {
         when(transferRepository.findById(transferId)).thenReturn(Optional.of(transfer));
 
         assertThat(transferService.transfer(ownerId, request, "first").id()).isEqualTo(transferId);
+    }
+
+    @Test
+    void highValueTransferIsQueuedForReviewWithoutMovingMoney() {
+        transferService = new TransferService(accountRepository, transferRepository, ledgerEntryRepository, idempotencyKeyRepository, auditService, new BigDecimal("50.00"));
+        TransferRequest request = new TransferRequest(source.getId(), destination.getId(), new BigDecimal("75.00"), "large");
+        when(idempotencyKeyRepository.findForUpdate(ownerId.toString(), "review-key", "TRANSFER")).thenReturn(Optional.empty());
+        when(idempotencyKeyRepository.saveAndFlush(any())).thenAnswer(invocation -> invocation.getArgument(0));
+        when(accountRepository.findAllByIdForUpdate(List.of(source.getId(), destination.getId()))).thenReturn(List.of(source, destination));
+        when(transferRepository.save(any())).thenAnswer(invocation -> {
+            Transfer transfer = invocation.getArgument(0);
+            ReflectionTestUtils.setField(transfer, "id", UUID.randomUUID());
+            return transfer;
+        });
+
+        var response = transferService.transfer(ownerId, request, "review-key");
+
+        assertThat(response.status()).isEqualTo(TransferStatus.PENDING_REVIEW);
+        assertThat(source.getBalance()).isEqualByComparingTo("100.00");
+        assertThat(destination.getBalance()).isEqualByComparingTo("0.00");
+        verify(ledgerEntryRepository, never()).save(any());
+    }
+
+    @Test
+    void approvingPendingTransferMovesMoneyAndCreatesLedgerEntries() {
+        UUID adminId = UUID.randomUUID();
+        UUID transferId = UUID.randomUUID();
+        Transfer pending = new Transfer(source, destination, new BigDecimal("40.00"), "manual review", TransferStatus.PENDING_REVIEW);
+        ReflectionTestUtils.setField(pending, "id", transferId);
+        when(transferRepository.findById(transferId)).thenReturn(Optional.of(pending));
+        when(accountRepository.findAllByIdForUpdate(List.of(source.getId(), destination.getId()))).thenReturn(List.of(source, destination));
+
+        var response = transferService.review(adminId, transferId, new com.bankflow.api.dto.TransferDtos.ReviewRequest(TransferStatus.COMPLETED, "approved"));
+
+        assertThat(response.status()).isEqualTo(TransferStatus.COMPLETED);
+        assertThat(source.getBalance()).isEqualByComparingTo("60.00");
+        assertThat(destination.getBalance()).isEqualByComparingTo("40.00");
+        assertThat(pending.getReviewedBy()).isEqualTo(adminId.toString());
+        verify(ledgerEntryRepository, times(2)).save(any());
     }
 
     private User user(UUID id, String email) {

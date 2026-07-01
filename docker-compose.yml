@@ -15,17 +15,35 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "56379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
     build: .
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       DATABASE_URL: jdbc:postgresql://postgres:5432/bankflow
       DATABASE_USERNAME: bankflow
       DATABASE_PASSWORD: bankflow
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_HEALTH_ENABLED: true
+      RATE_LIMIT_BACKEND: redis
+      RATE_LIMIT_REDIS_FAIL_OPEN: true
       JWT_SECRET: replace-this-local-dev-secret-with-a-long-random-value
       CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8080
+      TRANSFER_REVIEW_THRESHOLD: 10000.00
     ports:
       - "8080:8080"
     healthcheck:
