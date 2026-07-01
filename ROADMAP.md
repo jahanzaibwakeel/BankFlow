@@ -4,7 +4,7 @@ This roadmap breaks the remaining polish into practical chunks. The goal is to k
 
 ## Phase 1: Repo Readiness And Learning Support
 
-Status: current phase.
+Status: complete.
 
 - Add `.gitignore` so local learning notes, resume notes, secrets, and build outputs are not pushed.
 - Keep `resume_bullets.md` local-only.
@@ -14,14 +14,22 @@ Status: current phase.
 
 ## Phase 2: Build Verification And Developer Experience
 
-Status: next.
+Status: in progress.
+
+This round:
+
+- Add CI artifacts for JaCoCo coverage and test reports.
+- Add a Postman collection in addition to the existing `.http` file.
+- Add Java/Maven setup documentation for Windows.
+- Keep the local Java backend learning file updated with this round's additions.
+
+Left for next round:
 
 - Install/fix Java 21 and Maven on the local machine.
 - Run `mvn test`, `mvn -DskipTests package`, Docker build, and Compose startup.
-- Fix any compile or test failures.
+- Fix any compile or test failures found by the real build.
 - Add Maven Wrapper after Maven is available.
-- Add CI artifacts for JaCoCo coverage and test reports.
-- Add a Postman or Bruno collection in addition to the existing `.http` file.
+- Add screenshots or status badges once CI is green.
 
 ## Phase 3: Distributed Production Hardening
 

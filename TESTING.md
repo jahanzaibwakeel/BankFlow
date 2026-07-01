@@ -29,3 +29,5 @@ Coverage report:
 mvn test
 open target/site/jacoco/index.html
 ```
+
+In GitHub Actions, Surefire test reports and the JaCoCo HTML report are uploaded as workflow artifacts.

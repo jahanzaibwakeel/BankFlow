@@ -21,6 +21,8 @@
 - Request correlation IDs and structured log pattern.
 - CORS and simple rate limiting.
 - Dockerfile, Docker Compose, `.env.example`, and GitHub Actions CI.
+- CI uploads Surefire test reports and JaCoCo coverage reports as workflow artifacts.
+- REST Client and Postman API collections.
 - Unit tests, MockMvc integration tests, Testcontainers PostgreSQL tests, concurrency test, refresh-token tests, reconciliation tests.
 - JaCoCo coverage report generation.
 - Complete documentation set and recruiter resume bullets.
@@ -31,6 +33,7 @@
 - Secret/TODO/floating-point scan completed.
 - Docker availability checked.
 - `docker compose config` passed.
+- Postman collection added for manual endpoint verification once the app is running.
 
 ## Verification Blocked By Environment
 

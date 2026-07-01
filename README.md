@@ -53,6 +53,12 @@ docker compose up --build
 
 See [API.md](API.md), [ARCHITECTURE.md](ARCHITECTURE.md), and [TESTING.md](TESTING.md).
 See [COMPLETION_AUDIT.md](COMPLETION_AUDIT.md) for the final implementation and verification audit.
+See [JAVA_DEVELOPER_SETUP.md](docs/JAVA_DEVELOPER_SETUP.md) for Windows Java/Maven setup and local verification commands.
+
+## API Collections
+
+- REST Client collection: [bankflow-api.http](http/bankflow-api.http)
+- Postman collection: [bankflow.postman_collection.json](collections/bankflow.postman_collection.json)
 
 ## Known Limitations
 
