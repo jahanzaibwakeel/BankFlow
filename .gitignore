@@ -1,0 +1,28 @@
+# Build output
+target/
+out/
+build/
+
+# Runtime and secrets
+.env
+.env.*
+!.env.example
+*.log
+
+# IDE/editor
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local-only career/learning notes; do not push
+resume_bullets.md
+local-learning/
+
+# Test/tool caches
+.mvn/.gradle/
+.gradle/
+.pytest_cache/

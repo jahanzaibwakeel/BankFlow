@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: bankflow-api
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/bankflow}
+    username: ${DATABASE_USERNAME:bankflow}
+    password: ${DATABASE_PASSWORD:bankflow}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc.time_zone: UTC
+        format_sql: false
+  flyway:
+    enabled: true
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT:8080}
+
+bankflow:
+  jwt:
+    issuer: ${JWT_ISSUER:bankflow-api}
+    secret: ${JWT_SECRET:change-me-change-me-change-me-change-me-change-me-change-me}
+    access-token-minutes: ${JWT_ACCESS_TOKEN_MINUTES:30}
+    refresh-token-days: ${JWT_REFRESH_TOKEN_DAYS:14}
+    refresh-token-cleanup-cron: ${JWT_REFRESH_TOKEN_CLEANUP_CRON:0 15 3 * * *}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:8080}
+  rate-limit:
+    capacity: ${RATE_LIMIT_CAPACITY:120}
+    refill-per-minute: ${RATE_LIMIT_REFILL_PER_MINUTE:120}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when_authorized
+  health:
+    readinessstate:
+      enabled: true
+    livenessstate:
+      enabled: true
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  pattern:
+    level: "%5p [requestId:%X{requestId:-}]"
+  level:
+    org.springframework.security: INFO

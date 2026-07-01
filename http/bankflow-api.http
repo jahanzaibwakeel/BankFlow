@@ -1,0 +1,66 @@
+@baseUrl = http://localhost:8080
+@customerEmail = customer@bankflow.dev
+@customerPassword = Customer123!
+@adminEmail = admin@bankflow.dev
+@adminPassword = Admin123!
+
+### Login as seeded customer
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{customerEmail}}",
+  "password": "{{customerPassword}}"
+}
+
+### Create account
+POST {{baseUrl}}/api/accounts
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "type": "CHECKING"
+}
+
+### Refresh token
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Deposit
+POST {{baseUrl}}/api/accounts/{{accountId}}/deposit
+Authorization: Bearer {{customerToken}}
+Content-Type: application/json
+
+{
+  "amount": "100.00",
+  "description": "Paycheck"
+}
+
+### Transfer
+POST {{baseUrl}}/api/transfers
+Authorization: Bearer {{customerToken}}
+Idempotency-Key: demo-transfer-001
+Content-Type: application/json
+
+{
+  "sourceAccountId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+  "destinationAccountId": "{{accountId}}",
+  "amount": "25.00",
+  "description": "Internal move"
+}
+
+### Ledger
+GET {{baseUrl}}/api/accounts/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/ledger
+Authorization: Bearer {{customerToken}}
+
+### Admin audit logs
+GET {{baseUrl}}/api/admin/audit-logs
+Authorization: Bearer {{adminToken}}
+
+### Admin reconciliation
+GET {{baseUrl}}/api/admin/reconciliation
+Authorization: Bearer {{adminToken}}

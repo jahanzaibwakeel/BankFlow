@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:bankflow;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    username: sa
+    password:
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+bankflow:
+  jwt:
+    issuer: bankflow-test
+    secret: test-secret-test-secret-test-secret-test-secret-test-secret
+    access-token-minutes: 30
+    refresh-token-days: 14
+    refresh-token-cleanup-cron: "0 15 3 * * *"
+  cors:
+    allowed-origins: http://localhost:3000
+  rate-limit:
+    capacity: 1000
+    refill-per-minute: 1000

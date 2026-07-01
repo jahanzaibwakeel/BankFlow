@@ -1,0 +1,15 @@
+package com.bankflow.api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@EnableJpaAuditing
+@EnableScheduling
+@SpringBootApplication
+public class BankFlowApiApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(BankFlowApiApplication.class, args);
+    }
+}
