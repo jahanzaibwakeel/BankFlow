@@ -14,7 +14,7 @@ Status: complete.
 
 ## Phase 2: Build Verification And Developer Experience
 
-Status: in progress.
+Status: complete.
 
 This round:
 
@@ -22,14 +22,16 @@ This round:
 - Add a Postman collection in addition to the existing `.http` file.
 - Add Java/Maven setup documentation for Windows.
 - Keep the local Java backend learning file updated with this round's additions.
+- Verified Java 21 through the installed JDK path.
+- Used portable Maven to run the first build, then added Maven Wrapper pinned to Maven 3.9.9.
+- Verified `mvnw.cmd test`, `mvn -DskipTests package`, Docker image build, Compose startup, readiness health, login, and authenticated account listing.
+- Added a malformed JSON error handler discovered during smoke testing.
 
 Left for next round:
 
-- Install/fix Java 21 and Maven on the local machine.
-- Run `mvn test`, `mvn -DskipTests package`, Docker build, and Compose startup.
-- Fix any compile or test failures found by the real build.
-- Add Maven Wrapper after Maven is available.
-- Add screenshots or status badges once CI is green.
+- Investigate why Testcontainers cannot access Docker from the JVM on this Windows/Codex environment while Docker Compose works.
+- Once GitHub Actions is green, add README badges.
+- Optionally add screenshot artifacts for Swagger/health/demo requests.
 
 ## Phase 3: Distributed Production Hardening
 

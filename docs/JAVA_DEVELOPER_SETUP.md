@@ -19,6 +19,12 @@ javac -version
 
 Expected: Java 21.
 
+On this machine, the JDK was found at:
+
+```text
+C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot
+```
+
 ## Install Maven
 
 Recommended:
@@ -63,8 +69,8 @@ Open a new PowerShell window after changing environment variables.
 ## BankFlow Verification Commands
 
 ```powershell
-mvn test
-mvn -DskipTests package
+.\mvnw.cmd test
+.\mvnw.cmd -DskipTests package
 docker build --progress=plain -t bankflow-api:local .
 docker compose up --build
 ```
@@ -81,16 +87,24 @@ Swagger UI:
 http://localhost:8080/swagger-ui.html
 ```
 
-## Maven Wrapper Next Step
+## Testcontainers Note
 
-After Maven works locally, generate Maven Wrapper:
+BankFlow's PostgreSQL integration tests use Testcontainers. If Docker is not reachable from the JVM, those integration tests skip automatically and unit tests still run. To force full integration coverage, make sure Docker Desktop is running and this works:
 
 ```powershell
-mvn -N wrapper:wrapper -Dmaven=3.9.9
+docker ps
 ```
 
-Then future users can run:
+## Maven Wrapper
+
+BankFlow includes Maven Wrapper pinned to Maven 3.9.9. Use:
 
 ```powershell
 .\mvnw.cmd test
+```
+
+To regenerate the wrapper after Maven is available:
+
+```powershell
+mvn -N wrapper:wrapper "-Dmaven=3.9.9"
 ```

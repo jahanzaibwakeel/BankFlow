@@ -3,7 +3,7 @@
 Run everything with:
 
 ```bash
-mvn test
+./mvnw test
 ```
 
 Coverage includes:
@@ -22,11 +22,12 @@ Coverage includes:
 - JaCoCo coverage report generation.
 
 The integration suite starts PostgreSQL with Testcontainers, runs Flyway migrations, authenticates seeded demo users, and exercises real HTTP requests through Spring Security.
+If Docker is unavailable, the Testcontainers integration class is skipped so unit tests and build verification can still run locally. On CI or a Docker-ready machine, the same `mvn test` command runs the PostgreSQL integration tests.
 
 Coverage report:
 
 ```bash
-mvn test
+./mvnw test
 open target/site/jacoco/index.html
 ```
 

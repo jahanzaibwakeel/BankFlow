@@ -34,12 +34,20 @@
 - Docker availability checked.
 - `docker compose config` passed.
 - Postman collection added for manual endpoint verification once the app is running.
+- Maven Wrapper generated and pinned to Maven 3.9.9.
+- `mvnw.cmd test` passed: 12 tests discovered, 7 executed, 5 Testcontainers tests skipped because Docker is not reachable from the JVM in this environment.
+- `mvn -DskipTests package` passed and produced the Spring Boot jar.
+- `docker build --progress=plain -t bankflow-api:local .` passed.
+- `docker compose up -d --build` passed; PostgreSQL and app containers became healthy.
+- `GET /actuator/health/readiness` returned `{"status":"UP"}`.
+- `POST /api/auth/login` succeeded for the seeded customer.
+- `GET /api/accounts` succeeded with the customer JWT and returned the seeded accounts.
 
 ## Verification Blocked By Environment
 
-- Host `java` is not installed on PATH.
-- Host `mvn` is not installed on PATH.
-- Docker build was attempted with elevated access but timed out while resolving build/dependency layers and returned no build logs before timeout.
+- `java` is installed at `C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot`, but this Codex shell does not inherit it on PATH.
+- Host `mvn` is not installed globally; portable Maven was used from `C:\tmp\apache-maven-3.9.9`, and the repo now includes Maven Wrapper.
+- Testcontainers cannot access Docker from the JVM in this environment. Docker CLI and Docker Compose work, so integration tests are configured to skip only when Docker is unavailable to Testcontainers.
 
 ## Commands To Run On A Java/Docker-Ready Machine
 

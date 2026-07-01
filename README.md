@@ -25,8 +25,8 @@ Admin: `admin@bankflow.dev` / `Admin123!`
 ## Local Commands
 
 ```bash
-mvn test
-mvn -DskipTests package
+./mvnw test
+./mvnw -DskipTests package
 docker build -t bankflow-api:local .
 docker compose up --build
 ```
